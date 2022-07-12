@@ -1,0 +1,63 @@
+@import "~materialize-css/dist/css/materialize.min.css";
+
+.img_block img{
+    width: 420px;
+    margin-top: 20px;
+}
+.selected_item {
+    display: block;
+}
+.title {
+    margin-top: 125px;
+}
+.font_price {
+    font-weight: bold;
+    font-size: 20px;
+}
+.sku {
+    margin-top: 20px;
+}
+.variant_product {
+    margin-top: 20px;
+}
+.product_desc {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
