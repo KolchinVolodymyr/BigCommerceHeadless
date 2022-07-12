@@ -10,7 +10,7 @@ export const ProductDetailPage = () => {
     const productId = useParams().id;
     let productData = [];
     const [quantity, setQuantity] = useState('');
-    const [variant, setVariant] = useState({});
+    const [variant, setVariant] = useState(null);
     
     const loadMessage = async () => {
         try {
@@ -43,8 +43,9 @@ export const ProductDetailPage = () => {
         )
     }
     const handleChangeSelect = event => {
+       
         console.log('event.target', event.target);
-        setVariant({[event.target.name]: event.target.value});
+        setVariant({ ...variant, [event.target.name]: event.target.value});
         console.log('variant', variant);
     }
 
