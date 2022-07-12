@@ -9,6 +9,9 @@ export const ProductDetailPage = () => {
     const {request} = useHttp();
     const productId = useParams().id;
     let productData = [];
+    const [quantity, setQuantity] = useState('');
+    const [variant, setVariant] = useState({});
+    
     const loadMessage = async () => {
         try {
             const response = await request(`/product/${productId}`, 'GET')
@@ -39,6 +42,24 @@ export const ProductDetailPage = () => {
             <p className="center">No client yet !!! </p>
         )
     }
+    const handleChangeSelect = event => {
+        console.log('event.target', event.target);
+        setVariant({[event.target.name]: event.target.value});
+        console.log('variant', variant);
+    }
+
+    const handleChange = event => {
+        setQuantity(event.target.value);
+    
+        console.log('value is:', event.target.value);
+    };
+    const handleClick = event => {
+        event.preventDefault();
+    
+        // 👇️ value of input field
+        console.log('handleClick 👉️', quantity);
+        console.log('variant', variant);
+    };
 
     console.log('data', data)
     return(
@@ -75,10 +96,10 @@ export const ProductDetailPage = () => {
                                     return(
                                         <div key={index}>
                                             {i.node.displayName}
-                                            <select className='selected_item'>
+                                            <select onChange={handleChangeSelect} name={i.node.displayName} className='selected_item'>
                                                 {i.node.values.edges.map((el)=>{
                                                     return (
-                                                        <option>
+                                                        <option value={el.node.entityId}>
                                                             {el.node.label}
                                                         </option>
                                                     )
@@ -87,6 +108,15 @@ export const ProductDetailPage = () => {
                                         </div>
                                     )
                                 })}
+                            </div>
+                            <div>
+                                Quantity: <input onChange={handleChange} type="number" min="1" defaultValue="1"/>
+                                <button  
+                                    onClick={handleClick}
+                                    className="btn_margin btn waves-effect waves-light"
+                                    >
+                                    Add to cart
+                                </button>  
                             </div>
                         </div>
                         <div className="col s12 m12">
