@@ -9,7 +9,7 @@ export const ProductDetailPage = () => {
     const {request} = useHttp();
     const productId = useParams().id;
     let productData = [];
-    const [quantity, setQuantity] = useState('');
+    const [quantity, setQuantity] = useState('1');
     const [variant, setVariant] = useState(null);
     
     const loadMessage = async () => {
@@ -39,11 +39,10 @@ export const ProductDetailPage = () => {
     }
     if (!data[0]) {
         return (
-            <p className="center">No client yet !!! </p>
+            <p className="center">Product with given id was not found </p>
         )
     }
     const handleChangeSelect = event => {
-       
         console.log('event.target', event.target);
         setVariant({ ...variant, [event.target.name]: event.target.value});
         console.log('variant', variant);
@@ -54,12 +53,19 @@ export const ProductDetailPage = () => {
     
         console.log('value is:', event.target.value);
     };
-    const handleClick = event => {
+    const handleClick = async event => {
         event.preventDefault();
     
         // 👇️ value of input field
         console.log('handleClick 👉️', quantity);
         console.log('variant', variant);
+        const response = await request(`/carts`, 'POST', {
+            productId: productId,
+            quantity: quantity,
+            variant: variant
+        })
+        console.log('response', response);
+           
     };
 
     console.log('data', data)
