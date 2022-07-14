@@ -2,8 +2,10 @@ import React, {useState, useEffect} from 'react';
 import {useHttp} from "../../hooks/http.hook";
 import {Loader} from "../../components/loader";
 import {useParams} from 'react-router-dom';
+import {useMessage} from "../../hooks/message.hook";
 
 export const ProductDetailPage = () => {
+    const message = useMessage();
     const [data, setData] = useState([]);
     const [isLoaded, setIsLoaded] = useState(false);
     const {request} = useHttp();
@@ -19,8 +21,6 @@ export const ProductDetailPage = () => {
            
             productData.push(response.productPDP.product);
             setData(productData);
-
-            console.log('productData', productData);
             
             setIsLoaded(true);
         } catch (e) {console.log(e)}
@@ -44,27 +44,35 @@ export const ProductDetailPage = () => {
     }
     const handleChangeSelect = event => {
         console.log('event.target', event.target);
+
+        console.log('option_id', event.target.option_id)
         setVariant({ ...variant, [event.target.name]: event.target.value});
         console.log('variant', variant);
     }
 
     const handleChange = event => {
         setQuantity(event.target.value);
-    
         console.log('value is:', event.target.value);
     };
     const handleClick = async event => {
         event.preventDefault();
-    
+        // console.log("$('#quantity')", $('#quantity'));
+        if(data[0]?.inventory?.aggregated?.availableToSell < quantity) {
+            message(`Available quantity for purchase: ${data[0].inventory.aggregated.availableToSell}`);
+            return;
+        }
         // 👇️ value of input field
         console.log('handleClick 👉️', quantity);
         console.log('variant', variant);
+        
+        message(`Product added to cart`);
         const response = await request(`/carts`, 'POST', {
             productId: productId,
             quantity: quantity,
             variant: variant
         })
-        console.log('response', response);
+            
+        // console.log('response', response);
            
     };
 
@@ -106,7 +114,7 @@ export const ProductDetailPage = () => {
                                             <select onChange={handleChangeSelect} name={i.node.displayName} className='selected_item'>
                                                 {i.node.values.edges.map((el)=>{
                                                     return (
-                                                        <option value={el.node.entityId}>
+                                                        <option option_id="111" value={el.node.entityId}>
                                                             {el.node.label}
                                                         </option>
                                                     )
@@ -117,7 +125,14 @@ export const ProductDetailPage = () => {
                                 })}
                             </div>
                             <div>
-                                Quantity: <input onChange={handleChange} type="number" min="1" defaultValue="1"/>
+                                Quantity: 
+                                <input 
+                                    id='quantity'
+                                    onChange={handleChange} 
+                                    type="number" 
+                                    min="1" 
+                                    defaultValue="1"
+                                    max='10'/>
                                 <button  
                                     onClick={handleClick}
                                     className="btn_margin btn waves-effect waves-light"

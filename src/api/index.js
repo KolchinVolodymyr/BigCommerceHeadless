@@ -41,6 +41,11 @@ app.get('/product/:id', async function (req, res) {
               name
               description
               sku
+              inventory {
+                aggregated {
+                  availableToSell
+                }
+              }
               defaultImage {
                 ...ImageFields
               }
