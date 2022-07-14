@@ -1,7 +1,7 @@
 const express = require('express');
 const BigCommerce = require('node-bigcommerce');
 const fetch = require('node-fetch');
-
+const bodyParser = require('body-parser')
 
 const bigCommerce = new BigCommerce({
     clientId: '4i54xjq6tyr3hbmsmv2zojgi2o0mzu7',
@@ -12,6 +12,11 @@ const bigCommerce = new BigCommerce({
 })
 
 const app = express();
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+
+// parse application/json
+app.use(bodyParser.json())
 
 //ROUTE DEFINE
 app.get('/product/:id', async function (req, res) {
@@ -36,6 +41,11 @@ app.get('/product/:id', async function (req, res) {
               name
               description
               sku
+              inventory {
+                aggregated {
+                  availableToSell
+                }
+              }
               defaultImage {
                 ...ImageFields
               }
@@ -174,6 +184,74 @@ app.get('/product/:id', async function (req, res) {
         console.log('error', e)
     }
 });
+
+app.post('/carts', async function (req, res) {
+  try {
+    console.log('req.params', req.params);
+    console.log('req.body', req.body);
+    console.log('bigComemrcer api cart');
+    if(req.body.variant === null) {
+      // bigCommerce.post('/carts/4c498cb2-3e0f-4298-9c9c-9b3813bf530e/items', {
+      //   "line_items": [
+      //         {
+      //           "quantity": req.body.quantity,
+      //           "product_id": req.body.productId,
+      //         }
+      //       ]
+      // })
+      // .then(response => {
+      //   console.log('response', response);
+      // })
+    } else {
+      // bigCommerce.post('/carts/4c498cb2-3e0f-4298-9c9c-9b3813bf530e/items', {
+      //   "line_items": [
+      //         {
+      //           "quantity": req.body.quantity,
+      //           "product_id": req.body.productId,
+      //           //"variant_id":47,
+      //           "option_selections":[
+      //             { 
+      //               "option_id": 111,
+      //               "option_value": 10
+      //             },
+      //             { 
+      //               "option_id": 112,
+      //               "option_value": 95
+      //             }
+      //           ]
+      //         }
+      //       ]
+      // })
+      // .then(response => {
+      //   console.log('response', response);
+      // })
+    }
+
+    // bigCommerce.get('/carts/4c498cb2-3e0f-4298-9c9c-9b3813bf530e')
+    // .then(response => {
+    //   console.log('response', response.data.line_items.physical_items)
+    //   console.log('response', response);
+    // })
+
+    
+
+
+    // bigCommerce.post('/carts', {
+    //   "line_items": [
+    //     {
+    //       "quantity": 1,
+    //       "product_id": 94,
+    //     }
+    //   ]
+    // })
+    // .then(response => {
+    //   console.log('response', response.data.id)
+    // })
+    
+  } catch (e) {
+    console.log('error', e)
+  }
+})
 
 
 app.listen(8080 || process.env.PORT, function () {
