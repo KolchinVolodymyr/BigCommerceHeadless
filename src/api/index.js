@@ -96,6 +96,7 @@ app.get('/product/:id', async function (req, res) {
               options {
                 edges {
                   node {
+                    entityId
                     displayName
                     values {
                       edges {
@@ -187,44 +188,42 @@ app.get('/product/:id', async function (req, res) {
 
 app.post('/carts', async function (req, res) {
   try {
-    console.log('req.params', req.params);
-    console.log('req.body', req.body);
-    console.log('bigComemrcer api cart');
+    // console.log('req.body', req.body.variant);
+    let optionSelections = [];
+    req.body.variant.map((item)=>{
+      optionSelections.push({
+        "option_id": Object.keys(item)[0],
+        "option_value": Object.values(item)[0]
+      })
+    })
+
+    // console.log('BigCommerc api cart', optionSelections);
     if(req.body.variant === null) {
-      // bigCommerce.post('/carts/4c498cb2-3e0f-4298-9c9c-9b3813bf530e/items', {
-      //   "line_items": [
-      //         {
-      //           "quantity": req.body.quantity,
-      //           "product_id": req.body.productId,
-      //         }
-      //       ]
-      // })
-      // .then(response => {
-      //   console.log('response', response);
-      // })
+      bigCommerce.post('/carts/4c498cb2-3e0f-4298-9c9c-9b3813bf530e/items', {
+        "line_items": [
+              {
+                "quantity": req.body.quantity,
+                "product_id": req.body.productId,
+              }
+            ]
+      })
+      .then(response => {
+        console.log('response', response);
+      })
+      
     } else {
-      // bigCommerce.post('/carts/4c498cb2-3e0f-4298-9c9c-9b3813bf530e/items', {
-      //   "line_items": [
-      //         {
-      //           "quantity": req.body.quantity,
-      //           "product_id": req.body.productId,
-      //           //"variant_id":47,
-      //           "option_selections":[
-      //             { 
-      //               "option_id": 111,
-      //               "option_value": 10
-      //             },
-      //             { 
-      //               "option_id": 112,
-      //               "option_value": 95
-      //             }
-      //           ]
-      //         }
-      //       ]
-      // })
-      // .then(response => {
-      //   console.log('response', response);
-      // })
+      bigCommerce.post('/carts/4c498cb2-3e0f-4298-9c9c-9b3813bf530e/items', {
+        "line_items": [
+              {
+                "quantity": req.body.quantity,
+                "product_id": req.body.productId,
+                "option_selections": optionSelections
+              }
+            ]
+      })
+      .then(response => {
+        console.log('response', response);
+      })
     }
 
     // bigCommerce.get('/carts/4c498cb2-3e0f-4298-9c9c-9b3813bf530e')

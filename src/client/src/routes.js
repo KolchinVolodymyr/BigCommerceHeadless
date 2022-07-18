@@ -13,6 +13,7 @@ export const useRoutes = () => {
             <Route path="/product/:id" exact>
                 <ProductDetailPage />
             </Route>
+            <Redirect to="/" />
         </Switch>
     )
 }
